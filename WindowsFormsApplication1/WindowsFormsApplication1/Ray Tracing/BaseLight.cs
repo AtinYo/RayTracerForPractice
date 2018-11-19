@@ -18,12 +18,12 @@ namespace WindowsFormsApplication1.Ray_Tracing
             light_origin = origin;
         }
 
-        public virtual Ray GetLight(Vec3 point)
+        public virtual Ray GetLightRay(Vec3 point)
         {
             throw new NotImplementedException();
         }
 
-        public virtual Vec3 GetLightIntensity(int x, int y)
+        public virtual float GetDistance(Vec3 end)
         {
             throw new NotImplementedException();
         }
@@ -36,14 +36,14 @@ namespace WindowsFormsApplication1.Ray_Tracing
 
         }
 
-        public override Ray GetLight(Vec3 point)
+        public override Ray GetLightRay(Vec3 point)
         {
             return new Ray(light_origin, point);
         }
 
-        public override Vec3 GetLightIntensity(int x, int y)
+        public override float GetDistance(Vec3 end)
         {
-            return base.GetLightIntensity(x, y);
+            return (light_origin - end).len();
         }
     }
 }

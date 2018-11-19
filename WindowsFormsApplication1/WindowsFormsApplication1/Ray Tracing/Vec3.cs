@@ -93,6 +93,17 @@ namespace WindowsFormsApplication1.Ray_Tracing
             return new Vec3(l.y * r.z - l.z * r.y, l.z * r.x - l.x * r.z, l.x * r.y - l.y * r.x);
         }
 
+        /// <summary>
+        /// 向量三个分量对应相乘
+        /// </summary>
+        /// <param name="l"></param>
+        /// <param name="r"></param>
+        /// <returns></returns>
+        public static Vec3 product(Vec3 l, Vec3 r)
+        {
+            return new Vec3(l.x * r.x, l.y * r.y, l.z * r.z);
+        }
+
         public static readonly Vec3 unit = new Vec3(1, 1, 1);//单位向量
 
         public static readonly Vec3 zero = new Vec3(0, 0, 0);//零向量
@@ -101,7 +112,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
         /// 返回单位化后的向量
         /// </summary>
         /// <returns></returns>
-        public Vec3 unitize()
+        public Vec3 normalize()
         {
             float l = len();
             if (l == 0)
@@ -112,6 +123,18 @@ namespace WindowsFormsApplication1.Ray_Tracing
         public float len()
         {
             return (float)Math.Sqrt(data[0] * data[0] + data[1] * data[1] + data[2] * data[2]);
+        }
+
+        public System.Drawing.Color ToColor()
+        {
+            //保证Vec3的xyz在[0,1]区间
+            for (int i = 0; i < 3; i++)
+            {
+                data[i] = Math.Max(0, data[i]);
+                data[i] = Math.Min(1, data[i]);
+            }
+
+            return System.Drawing.Color.FromArgb((int)(x * 255), (int)(y * 255), (int)(z * 255));
         }
     }
 }

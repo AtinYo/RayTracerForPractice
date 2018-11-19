@@ -62,16 +62,26 @@ namespace WindowsFormsApplication1
         public void RenderPicture()
         {
             Scene scene = new Scene();
-            scene.SetLightSource(new BaseLight(new Vec3(-1, -1, 3)));
-            scene.AddRenderObj(new Sphere(new Vec3(0, 0, -300), 100f));
-            Camera camera = new Camera(new Vec3(0, 0, 0), new Vec3(0, 0, -1), new Vec3(0, 1, 0), 960, 540, 500);
+
+            //设置光源
+            scene.SetLightSource(new PointLight(new Vec3(400, 400, 100)));
+            //scene.SetLightSource(new PointLight(new Vec3(300, 300, -400))); 用来测试背光面出现高光
+
+            //添加物体
+            scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 0, 1), new Vec3(1, 1, 1), 64)));
+            scene.AddRenderObj(new Sphere(new Vec3(100, 0, -300), 100f, new LambertianMaterial(new Vec3(0, 0, 1))));
+            scene.AddRenderObj(new Sphere(new Vec3(0, -1200, -800), 1200f, new DefaultMaterial(new Vec3(0.5f, 0.5f, 1))));
+
+
+            Camera camera = new Camera(new Vec3(0, 0, 0), new Vec3(0, 0, -1), new Vec3(0, 1, 0), 960, 540, 500, 550);
+
 
             bitmap = new System.Drawing.Bitmap(960, 540);
             for (int i = 0; i < 960; i++)
             {
                 for (int j = 0; j < 540; j++)
                 {
-                    bitmap.SetPixel(i, j, scene.GetColor(i + 1, j + 1, camera));
+                    bitmap.SetPixel(i, j, scene.GetColor(i + 1, 540 - j, camera));
                 }
             }
             pictureBox1.Image = bitmap;

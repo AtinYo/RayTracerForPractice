@@ -55,6 +55,7 @@
     <Compile Include="Ray Tracing\BaseLight.cs" />
     <Compile Include="Ray Tracing\Camera.cs" />
     <Compile Include="Ray Tracing\Hitable.cs" />
+    <Compile Include="Ray Tracing\Material.cs" />
     <Compile Include="Ray Tracing\Ray.cs" />
     <Compile Include="Ray Tracing\RenderObj.cs" />
     <Compile Include="Ray Tracing\Scene.cs" />

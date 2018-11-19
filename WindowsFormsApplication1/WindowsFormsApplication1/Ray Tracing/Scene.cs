@@ -16,7 +16,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             renderobj_list.Add(obj);
         }
-        
+
         public void RemoveRenderObj(RenderObj obj)
         {
             renderobj_list.Remove(obj);
@@ -30,23 +30,20 @@ namespace WindowsFormsApplication1.Ray_Tracing
         public System.Drawing.Color GetColor(int x, int y, Camera cam)
         {
             Ray ray = cam.GetViewRay(x, y);
-            if (x == 480 && y == 270)
-            {
-                int a = 1;
-            }
+
             HitRecord temp = null;
 
             HitRecord record = null;
             float t_min = float.MaxValue;
 
-            for(int i = 0; i < renderobj_list.Count; i++)
+            for (int i = 0; i < renderobj_list.Count; i++)
             {
-                if (renderobj_list[i].Hit(ray, 0.0001f, float.MaxValue, ref temp))
+                if (renderobj_list[i].Hit(ray, 0.0001f, cam.render_depth, ref temp))
                 {
-                    if(temp.t< t_min)//寻找最近的相交信息
+                    if (temp.t < t_min)//寻找最近的相交信息
                     {
                         t_min = temp.t;
-                        record = temp;
+                        record = temp.Copy();
                     }
                 }
             }
@@ -55,16 +52,22 @@ namespace WindowsFormsApplication1.Ray_Tracing
             if (record != null)
             {
                 //计算颜色
-                return System.Drawing.Color.FromArgb(
-                    (int)(255 * (record.normal.x + 1) / 2),
-                    (int)(255 * (record.normal.y + 1) / 2),
-                    (int)(255 * (record.normal.z + 1) / 2));
-                //return System.Drawing.Color.White;
+                return record.material.GetColor(light, ray, record, cam.render_depth);
+
+                //法向量颜色
+                //return System.Drawing.Color.FromArgb(
+                //    (int)(255 * (record.normal.x + 1) / 2),
+                //    (int)(255 * (record.normal.y + 1) / 2),
+                //    (int)(255 * (record.normal.z + 1) / 2));
+
+
+                //普通材质颜色
+                //return BaseMaterial.NomarlMaterial.GetColor(light, null, record, cam.render_depth);
             }
             else
             {
-                //没有相交的话,给黑色
-                return System.Drawing.Color.FromArgb(0, 0, 0);
+                //没有相交的话,给白色
+                return System.Drawing.Color.FromArgb(255, 255, 255);
             }
         }
     }

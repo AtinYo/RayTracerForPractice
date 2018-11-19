@@ -8,6 +8,8 @@ namespace WindowsFormsApplication1.Ray_Tracing
 {
     public class RenderObj : Hitable
     {
+        public BaseMaterial material;
+
         public virtual bool Hit(Ray ray, float t_min, float t_max, ref HitRecord record)
         {
             throw new NotImplementedException();
@@ -22,10 +24,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
         public Vec3 center { get; private set; }
         public float radius { get; private set; }
 
-        public Sphere(Vec3 _center, float _radius)
+        public Sphere(Vec3 _center, float _radius, BaseMaterial _material)
         {
             center = _center;
             radius = _radius;
+            material = _material;
         }
 
         public override bool Hit(Ray ray, float t_min, float t_max, ref HitRecord record)
@@ -47,12 +50,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
                 if (temp > t_min && temp < t_max)
                 {
                     if (record == null)
-                    {
                         record = new HitRecord();
-                    }
                     record.t = temp;
                     record.hit_point = ray.GetPoint(temp);
-                    record.normal = (new Ray(center, record.hit_point)).Direction.unitize();//球心与球面上一点为法向量方向
+                    record.normal = (new Ray(center, record.hit_point)).Direction.normalize();//球心与球面上一点为法向量方向
+                    record.material = material;
                     return true;
                 }
 
@@ -60,12 +62,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
                 if (temp > t_min && temp < t_max)
                 {
                     if (record == null)
-                    {
                         record = new HitRecord();
-                    }
                     record.t = temp;
                     record.hit_point = ray.GetPoint(temp);
-                    record.normal = (new Ray(center, record.hit_point)).Direction.unitize();//球心与球面上一点为法向量方向
+                    record.normal = (new Ray(center, record.hit_point)).Direction.normalize();//球心与球面上一点为法向量方向
+                    record.material = material;
                     return true;
                 }
             }
