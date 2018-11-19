@@ -16,6 +16,44 @@ namespace WindowsFormsApplication1.Ray_Tracing
         }
     }
 
+    public class Plane : RenderObj
+    {
+        private Vec3 normal;
+        private float d;
+        public Plane(Vec3 _normal, float _d, BaseMaterial _material)
+        {
+            normal = _normal;
+            d = _d;
+            material = _material;
+        }
+
+        public override bool Hit(Ray ray, float t_min, float t_max, ref HitRecord record)
+        {
+            //平面的隐式方程  p·n = d
+            //射线方程 p = o + t·dir
+            //代入有 t = (d - o·n)/(dir·n)
+            //考虑到只有射向平面才叫相交(射出不算),所以必须满足 Vec.dot(dir, normal) < 0
+
+            float dir_dot_normal = Vec3.dot(ray.Direction, normal);
+
+            if (dir_dot_normal < 0)
+            {
+                float t = (d - Vec3.dot(ray.Origin, normal)) / dir_dot_normal;
+                if (t > t_min && t < t_max)
+                {
+                    if (record == null)
+                        record = new HitRecord();
+                    record.t = t;
+                    record.hit_point = ray.GetPoint(t);
+                    record.normal = normal;
+                    record.material = material;
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     /// <summary>
     /// 圆
     /// </summary>

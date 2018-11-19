@@ -70,8 +70,8 @@ namespace WindowsFormsApplication1
             //添加物体
             scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 0, 1), new Vec3(1, 1, 1), 64)));
             scene.AddRenderObj(new Sphere(new Vec3(100, 0, -300), 100f, new LambertianMaterial(new Vec3(0, 0, 1))));
-            scene.AddRenderObj(new Sphere(new Vec3(0, -1200, -800), 1200f, new DefaultMaterial(new Vec3(0.5f, 0.5f, 1))));
-
+            //scene.AddRenderObj(new Sphere(new Vec3(0, -1200, -800), 1200f, new DefaultMaterial(new Vec3(0.5f, 0.5f, 1))));
+            scene.AddRenderObj(new Plane(new Vec3(0, 1, 0), -100, new DefaultMaterial(new Vec3(0f, 0.8f, 0.8f))));
 
             Camera camera = new Camera(new Vec3(0, 0, 0), new Vec3(0, 0, -1), new Vec3(0, 1, 0), 960, 540, 500, 550);
 

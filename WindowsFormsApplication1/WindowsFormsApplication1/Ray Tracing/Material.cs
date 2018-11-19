@@ -37,9 +37,8 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             //把光在某一点的颜色，用距离映射到颜色区间
             //[0, depth] -- > [0, 255]不过,len = 0的时候是255, len = depth的时候是0
-            //float coeffience = 1 - light.GetDistance(record.hit_point) / depth;
-            //default_color *= coeffience;
-            return default_color.ToColor();
+            float coeffience = 1-(record.t / depth);
+            return (default_color * coeffience).ToColor();
         }
     }
 

@@ -133,8 +133,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
                 data[i] = Math.Max(0, data[i]);
                 data[i] = Math.Min(1, data[i]);
             }
-
-            return System.Drawing.Color.FromArgb((int)(x * 255), (int)(y * 255), (int)(z * 255));
+            return System.Drawing.Color.FromArgb(255, (int)(x * 255), (int)(y * 255), (int)(z * 255));
         }
     }
 }
