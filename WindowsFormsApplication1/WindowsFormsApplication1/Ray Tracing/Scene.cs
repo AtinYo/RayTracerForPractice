@@ -32,7 +32,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             light = _light;
         }
 
-        public Vec3 GetColor(Ray ray, float render_depth, float scatter_depth)
+        public Vec3 GetColorFromMaterial(Ray ray, float render_depth, float scatter_depth)
         {
             HitRecord temp = null;
 
@@ -59,15 +59,21 @@ namespace WindowsFormsApplication1.Ray_Tracing
 
                 Vec3 surface_color = record.material.GetColor(light, ray, record, render_depth);//表面本身颜色
                 var c1 = surface_color.product(Vec3.one - record.material.attenuation);
+
                 if (scatter_depth < MAX_DEPTH)
                 {
-                    //现在反射效果很差,很容易看起来点点点的离散分布,估计需要多采样+插值,日后看到相关有空再改
-                    var c2 = GetColor(record.material.GetScatteredRay(ray, record), render_depth, scatter_depth + 1).product(record.material.attenuation);
+                    Ray new_ray = null;
+                    if (!record.material.Refracted(ray, record, ref new_ray))
+                    {
+                        new_ray = record.material.GetScatteredRay(ray, record);
+                    }
+                    var c2 = GetColorFromMaterial(new_ray, render_depth, scatter_depth + 1).product(record.material.attenuation);
+
                     return c1 + c2;
                 }
                 else
                 {
-                    return c1;
+                    return Vec3.zero;
                 }
 
                 //法向量颜色
@@ -95,22 +101,22 @@ namespace WindowsFormsApplication1.Ray_Tracing
             if (n <= 0)
             {
                 ray = camera.GetViewRay(i + 1, 540 - j);
-                color_vec = this.GetColor(ray, camera.render_depth, 0);
+                color_vec = GetColorFromMaterial(ray, camera.render_depth, 0);
                 return color_vec;
             }
-            else 
+            else
             {
                 for (int _n = 0; _n < n; _n++)
                 {
                     //utils.Instance.GenerateRandomNum()*2-1 -->  [-1, 1]的随机数
                     ray = camera.GetViewRay((i + 1) + utils.Instance.GenerateRandomNum(), (540 - j) + utils.Instance.GenerateRandomNum());
-                    color_vec += this.GetColor(ray, camera.render_depth, 0);
+                    color_vec += GetColorFromMaterial(ray, camera.render_depth, 0);
                 }
                 return color_vec / (float)n;
             }
         }
 
-        public void CalculateColor(Camera camera, int i, int j,ref System.Drawing.Bitmap bitmap)
+        public void CalculateColor(Camera camera, int i, int j, ref System.Drawing.Bitmap bitmap)
         {
             Vec3 color_vec = _MultiSampling(camera, i, j, SAMPLING_TIMES);
 

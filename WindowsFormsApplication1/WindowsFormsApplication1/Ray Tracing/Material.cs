@@ -9,6 +9,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
     public class BaseMaterial
     {
         public Vec3 attenuation { get; protected set; }//衰减率
+        public float refracted_index{ get; protected set; }//折射率,typically air = 1, glass = 1.3-1.7, diamond = 2.4[通常空气折射率1,玻璃1.3-1.7,钻石2.4]
 
         /// <summary>
         /// 
@@ -26,6 +27,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
         public virtual Ray GetScatteredRay(Ray ray_in, HitRecord record)
         {
             throw new NotImplementedException();
+        }
+
+        public virtual bool Refracted(Ray ray_in, HitRecord record, ref Ray refracted)
+        {
+            return false;
         }
 
         public static readonly BaseMaterial NomarlMaterial = new DefaultMaterial(new Vec3(1, 1, 1));
@@ -69,7 +75,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
 
             float n_dot_l = Math.Max(0, Vec3.dot(record.normal, l));
 
-            Vec3 I = new Vec3(1, 1, 1);
+            Vec3 I = Vec3.one;
 
             Vec3 dif = diffuse * n_dot_l;
 
@@ -108,7 +114,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             attenuation = _attenuation;
         }
 
-        //magic function.. = =
+        //magic function.. = =,神奇的以0和0.12f这两个数为分界线做插值可以解决背光面高光问题...
         private float _smoothstep(float t1, float t2, float n_dot_l)
         {
             if (n_dot_l < t1)
@@ -128,7 +134,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             Vec3 h = (-view_ray.Direction + l).normalize();
             float n_dot_h = Math.Max(0, Vec3.dot(record.normal, h));
 
-            Vec3 I = new Vec3(1, 1, 1);
+            Vec3 I = Vec3.one;
 
             Vec3 dif = diffuse * n_dot_l;
 
@@ -154,4 +160,70 @@ namespace WindowsFormsApplication1.Ray_Tracing
         }
     }
 
+
+    //电介质材质.
+    public class DielectricMaterial : BaseMaterial
+    {
+        private Vec3 diffuse;//散射系数或表面颜色
+
+        public DielectricMaterial(Vec3 _diffuse, float _refracted_index)
+        {
+            diffuse = _diffuse;
+            attenuation = Vec3.one;
+            refracted_index = _refracted_index;
+        }
+
+        public override Vec3 GetColor(BaseLight light, Ray view_ray, HitRecord record, float depth)
+        {
+            Vec3 l = -(light.GetLightRay(record.hit_point).Direction.normalize());
+
+            float n_dot_l = Math.Max(0, Vec3.dot(record.normal, l));
+
+            Vec3 I = Vec3.one;
+
+            Vec3 dif = diffuse * n_dot_l;
+
+            Vec3 L = Vec3.product(I, dif);
+
+            return L;
+        }
+
+        public override Ray GetScatteredRay(Ray ray_in, HitRecord record)
+        {
+            //镜面反射...
+            Vec3 scattered_dir = ray_in.Direction - 2 * Vec3.dot(ray_in.Direction, record.normal) * record.normal;
+            return new Ray(record.hit_point, scattered_dir);
+        }
+
+        ///懒得注释了,折射公式推一推就有了
+        public override bool Refracted(Ray ray_in, HitRecord record, ref Ray refracted)
+        {
+            Vec3 outward_normal;
+            float ni_over_nt;
+            # region 判断从空气到介质还是介质到空气.此外这里折射计算可能有误,参考的ray tracing in one weekend,等以后看看其他书籍比较一下
+            float ray_dir_dot_n = Vec3.dot(ray_in.Direction, record.normal);
+            if (ray_dir_dot_n > 0)
+            {
+                outward_normal = -record.normal;
+                ni_over_nt = record.material.refracted_index / 1f;
+            }
+            else
+            {
+                outward_normal = record.normal;
+                ni_over_nt = 1f / record.material.refracted_index;
+            }
+            #endregion
+
+            Vec3 v = ray_in.Direction.normalize();
+            float dt = Vec3.dot(v, outward_normal);
+            float discriminant = 1.0f - ni_over_nt * ni_over_nt * (1 - dt * dt);
+            if (discriminant > 0)//说明可以折射
+            {
+                Vec3 refracted_dir = ni_over_nt * (v - outward_normal * dt) - outward_normal * (float)Math.Sqrt(discriminant);
+                refracted = new Ray(record.hit_point, refracted_dir);
+                return true;
+            }
+            return false;
+        }
+    }
 }

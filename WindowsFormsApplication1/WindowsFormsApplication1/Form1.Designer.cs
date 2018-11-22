@@ -73,6 +73,7 @@ namespace WindowsFormsApplication1
             //scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 0, 1), new Vec3(1, 1, 1), 64, Vec3.one)));
             //scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new LambertianMaterial(new Vec3(1, 1, 1), new Vec3(0.25f,0.25f,0.25f))));
             scene.AddRenderObj(new Sphere(new Vec3(100, 0, -300), 100f, new LambertianMaterial(new Vec3(0, 0, 1), new Vec3(0.25f, 0.25f, 0.25f))));
+            scene.AddRenderObj(new Sphere(new Vec3(0, 0, -100), 25f, new DielectricMaterial(Vec3.one, 2.4f)));
             //scene.AddRenderObj(new Sphere(new Vec3(0, -1200, -800), 1200f, new DefaultMaterial(new Vec3(0.5f, 0.5f, 1))));
             //scene.AddRenderObj(new Plane(new Vec3(0, 1, 0), -100, new DefaultMaterial(new Vec3(0f, 0.8f, 0.8f))));
             scene.AddRenderObj(new Plane(new Vec3(0, 1, 0), -100, new LambertianMaterial(new Vec3(0, 0.8f, 0.8f), new Vec3(0.25f, 0.25f, 0.25f))));
