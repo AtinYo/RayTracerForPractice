@@ -32,7 +32,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             light = _light;
         }
 
-        public bool CheckHit(Ray ray, float t_min, float t_max, ref HitRecord record)
+        public bool CheckHit(Ray ray, float t_min, float t_max, ref HitRecord record, bool need_check_transimit = false)
         {
             bool hit = false;
 
@@ -44,6 +44,10 @@ namespace WindowsFormsApplication1.Ray_Tracing
             {
                 if (renderobj_list[i].Hit(ray, 0.0001f, t_max, ref temp))
                 {
+                    if (need_check_transimit && !renderobj_list[i].material.CanLightTransimit())//给计算影子射线hit到电介质用的.
+                    {
+                        continue;
+                    }
                     if (temp.t < t_cur_min)//寻找最近的相交信息
                     {
                         t_cur_min = temp.t;
@@ -66,7 +70,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
                 //计算阴影
                 HitRecord shadow_record = null;//没什么用
                 Ray shadow_ray = new Ray(record.hit_point, light.light_origin - record.hit_point);
-                if (CheckHit(shadow_ray, 0.0001f, render_depth, ref shadow_record))
+                if (CheckHit(shadow_ray, 0.0001f, render_depth, ref shadow_record, true))
                 {
                     if (!shadow_record.material.CanLightTransimit())
                         return Vec3.zero;
@@ -105,7 +109,8 @@ namespace WindowsFormsApplication1.Ray_Tracing
                 //return BaseMaterial.NomarlMaterial.GetColor(light, null, record, cam.render_depth);
             }
 
-            return Vec3.one;//没有相交的话,给白色 或 达到了递归最大次数
+            //return Vec3.one;//没有相交的话,给白色 或 达到了递归最大次数
+            return _BackGroundColor(ray);//没有相交的话,给背景色
         }
 
         /// <summary>
@@ -139,6 +144,13 @@ namespace WindowsFormsApplication1.Ray_Tracing
             Vec3 color_vec = _MultiSampling(camera, i, j, SAMPLING_TIMES);
 
             bitmap.SetPixel(i, j, color_vec.ToColor());
+        }
+
+        private Vec3 _BackGroundColor(Ray ray)
+        {
+            Vec3 unit_direction = ray.Direction.normalize();
+            float t = 0.5f * (unit_direction.y + 1.0f);
+            return (1.0f - t) * Vec3.one + t * new Vec3(0.5f, 0.7f, 1.0f);
         }
     }
 }
