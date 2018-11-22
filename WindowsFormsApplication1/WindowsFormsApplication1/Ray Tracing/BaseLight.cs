@@ -22,11 +22,6 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             throw new NotImplementedException();
         }
-
-        public virtual float GetDistance(Vec3 end)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public class PointLight : BaseLight
@@ -38,12 +33,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
 
         public override Ray GetLightRay(Vec3 point)
         {
-            return new Ray(light_origin, point);
-        }
-
-        public override float GetDistance(Vec3 end)
-        {
-            return (light_origin - end).len();
+            return new Ray(light_origin, point - light_origin);
         }
     }
 }

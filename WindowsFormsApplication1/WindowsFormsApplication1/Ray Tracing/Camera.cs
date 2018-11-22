@@ -44,9 +44,9 @@ namespace WindowsFormsApplication1.Ray_Tracing
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public Ray GetViewRay(int x, int y)
+        public Ray GetViewRay(float x, float y)
         {
-            return new Ray(viewpoint, pixel_origin + (float)x / width * pixel_horizontal + (float)y / height * pixel_vertical);
+            return new Ray(viewpoint, pixel_origin + x / width * pixel_horizontal + y / height * pixel_vertical - viewpoint);
         }
     }
 }

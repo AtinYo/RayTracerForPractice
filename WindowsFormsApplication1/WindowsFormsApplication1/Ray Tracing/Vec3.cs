@@ -68,6 +68,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             return new Vec3(-v.x, -v.y, -v.z);
         }
 
+        /******************************下面要注意别重载 Vec3 * Vec3的情况,不然很容易跟Vec.dot混淆,对debug不友好****************************/
         public static Vec3 operator *(Vec3 v3, float num)
         {
             return new Vec3(v3.x * num, v3.y * num, v3.z * num);
@@ -77,6 +78,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             return new Vec3(num * v3.x, num * v3.y, num * v3.z);
         }
+        /**********************************************************************************************************************************/
 
         public static Vec3 operator /(Vec3 v3, float num)
         {
@@ -104,9 +106,10 @@ namespace WindowsFormsApplication1.Ray_Tracing
             return new Vec3(l.x * r.x, l.y * r.y, l.z * r.z);
         }
 
-        public static readonly Vec3 unit = new Vec3(1, 1, 1);//单位向量
-
-        public static readonly Vec3 zero = new Vec3(0, 0, 0);//零向量
+        public Vec3 product(Vec3 v)
+        {
+            return new Vec3(data[0] * v.x, data[1] * v.y, data[2] * v.z);
+        }
 
         /// <summary>
         /// 返回单位化后的向量
@@ -125,6 +128,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
             return (float)Math.Sqrt(data[0] * data[0] + data[1] * data[1] + data[2] * data[2]);
         }
 
+        public float len_square()
+        {
+            return data[0] * data[0] + data[1] * data[1] + data[2] * data[2];
+        }
+
         public System.Drawing.Color ToColor()
         {
             //保证Vec3的xyz在[0,1]区间
@@ -135,5 +143,8 @@ namespace WindowsFormsApplication1.Ray_Tracing
             }
             return System.Drawing.Color.FromArgb(255, (int)(x * 255), (int)(y * 255), (int)(z * 255));
         }
+
+        public static readonly Vec3 one = new Vec3(1, 1, 1);//单位向量
+        public static readonly Vec3 zero = new Vec3(0, 0, 0);//零向量
     }
 }

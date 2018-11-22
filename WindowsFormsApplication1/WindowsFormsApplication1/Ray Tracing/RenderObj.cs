@@ -91,7 +91,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
                         record = new HitRecord();
                     record.t = temp;
                     record.hit_point = ray.GetPoint(temp);
-                    record.normal = (new Ray(center, record.hit_point)).Direction.normalize();//球心与球面上一点为法向量方向
+                    record.normal = (record.hit_point - center).normalize();//球心与球面上一点为法向量方向
                     record.material = material;
                     return true;
                 }
@@ -103,7 +103,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
                         record = new HitRecord();
                     record.t = temp;
                     record.hit_point = ray.GetPoint(temp);
-                    record.normal = (new Ray(center, record.hit_point)).Direction.normalize();//球心与球面上一点为法向量方向
+                    record.normal = (record.hit_point - center).normalize();//球心与球面上一点为法向量方向
                     record.material = material;
                     return true;
                 }

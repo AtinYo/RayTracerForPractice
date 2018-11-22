@@ -11,10 +11,10 @@ namespace WindowsFormsApplication1.Ray_Tracing
         private Vec3 org;//origin point
         private Vec3 dir;//direction,没单位化的
 
-        public Ray(Vec3 start, Vec3 end)
+        public Ray(Vec3 _org, Vec3 _dir)
         {
-            org = start;
-            dir = end - start;
+            org = _org;
+            dir = _dir;
         }
 
         public Vec3 Origin

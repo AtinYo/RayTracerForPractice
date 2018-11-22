@@ -64,14 +64,18 @@ namespace WindowsFormsApplication1
             Scene scene = new Scene();
 
             //设置光源
+            //scene.SetLightSource(new PointLight(new Vec3(0, 0, 100)));
             scene.SetLightSource(new PointLight(new Vec3(400, 400, 100)));
             //scene.SetLightSource(new PointLight(new Vec3(300, 300, -400))); 用来测试背光面出现高光
 
             //添加物体
-            scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 0, 1), new Vec3(1, 1, 1), 64)));
-            scene.AddRenderObj(new Sphere(new Vec3(100, 0, -300), 100f, new LambertianMaterial(new Vec3(0, 0, 1))));
+            scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 1, 1), new Vec3(1, 1, 1), 64, new Vec3(0.25f, 0.25f, 0.25f))));
+            //scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 0, 1), new Vec3(1, 1, 1), 64, Vec3.one)));
+            //scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new LambertianMaterial(new Vec3(1, 1, 1), new Vec3(0.25f,0.25f,0.25f))));
+            scene.AddRenderObj(new Sphere(new Vec3(100, 0, -300), 100f, new LambertianMaterial(new Vec3(0, 0, 1), new Vec3(0.25f, 0.25f, 0.25f))));
             //scene.AddRenderObj(new Sphere(new Vec3(0, -1200, -800), 1200f, new DefaultMaterial(new Vec3(0.5f, 0.5f, 1))));
-            scene.AddRenderObj(new Plane(new Vec3(0, 1, 0), -100, new DefaultMaterial(new Vec3(0f, 0.8f, 0.8f))));
+            //scene.AddRenderObj(new Plane(new Vec3(0, 1, 0), -100, new DefaultMaterial(new Vec3(0f, 0.8f, 0.8f))));
+            scene.AddRenderObj(new Plane(new Vec3(0, 1, 0), -100, new LambertianMaterial(new Vec3(0, 0.8f, 0.8f), new Vec3(0.25f, 0.25f, 0.25f))));
 
             Camera camera = new Camera(new Vec3(0, 0, 0), new Vec3(0, 0, -1), new Vec3(0, 1, 0), 960, 540, 500, 550);
 
@@ -81,7 +85,7 @@ namespace WindowsFormsApplication1
             {
                 for (int j = 0; j < 540; j++)
                 {
-                    bitmap.SetPixel(i, j, scene.GetColor(i + 1, 540 - j, camera));
+                    scene.CalculateColor(camera, i, j, ref bitmap);
                 }
             }
             pictureBox1.Image = bitmap;

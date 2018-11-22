@@ -60,9 +60,11 @@
     <Compile Include="Ray Tracing\RenderObj.cs" />
     <Compile Include="Ray Tracing\Scene.cs" />
     <Compile Include="Ray Tracing\unittest.cs" />
+    <Compile Include="Ray Tracing\utils.cs" />
     <Compile Include="Ray Tracing\Vec3.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
