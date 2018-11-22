@@ -34,6 +34,15 @@ namespace WindowsFormsApplication1.Ray_Tracing
             return false;
         }
 
+        /// <summary>
+        /// 暂时这个函数用于算阴影,因为阴影是用shadow_ray去判断是否hit,但是对于电介质这类可以通透的并不能单单相交,暂时简陋地给个函数做判断处理.电介质返回true
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool CanLightTransimit()
+        {
+            return false;
+        }
+
         public static readonly BaseMaterial NomarlMaterial = new DefaultMaterial(new Vec3(1, 1, 1));
     }
 
@@ -224,6 +233,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
                 return true;
             }
             return false;
+        }
+
+        public override bool CanLightTransimit()
+        {
+            return true;
         }
     }
 }

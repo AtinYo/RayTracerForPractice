@@ -32,28 +32,46 @@ namespace WindowsFormsApplication1.Ray_Tracing
             light = _light;
         }
 
-        public Vec3 GetColorFromMaterial(Ray ray, float render_depth, float scatter_depth)
+        public bool CheckHit(Ray ray, float t_min, float t_max, ref HitRecord record)
         {
+            bool hit = false;
+
             HitRecord temp = null;
 
-            HitRecord record = null;
-            float t_min = float.MaxValue;
+            float t_cur_min = float.MaxValue;
 
             for (int i = 0; i < renderobj_list.Count; i++)
             {
-                if (renderobj_list[i].Hit(ray, 0.0001f, render_depth, ref temp))
+                if (renderobj_list[i].Hit(ray, 0.0001f, t_max, ref temp))
                 {
-                    if (temp.t < t_min)//寻找最近的相交信息
+                    if (temp.t < t_cur_min)//寻找最近的相交信息
                     {
-                        t_min = temp.t;
+                        t_cur_min = temp.t;
                         record = temp.Copy();
+                        hit = true;
                     }
                 }
             }
 
+            return hit;
+        }
+
+        public Vec3 GetColorFromMaterial(Ray ray, float render_depth, float scatter_depth)
+        {
+            HitRecord record = null;
+
             //相交了再计算颜色
-            if (record != null)
+            if (CheckHit(ray, 0.0001f, render_depth, ref record))
             {
+                //计算阴影
+                HitRecord shadow_record = null;//没什么用
+                Ray shadow_ray = new Ray(record.hit_point, light.light_origin - record.hit_point);
+                if (CheckHit(shadow_ray, 0.0001f, render_depth, ref shadow_record))
+                {
+                    if (!shadow_record.material.CanLightTransimit())
+                        return Vec3.zero;
+                }
+
                 //计算颜色
                 //关于反射,这里采用 "材质的反射率为attenuation，则它传回的颜色是(1-attenuation)本身颜色，加上attenuation反射传回来的颜色"
 

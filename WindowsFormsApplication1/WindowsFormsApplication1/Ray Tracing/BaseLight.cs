@@ -11,7 +11,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
     /// </summary>
     public class BaseLight
     {
-        protected Vec3 light_origin;
+        public Vec3 light_origin { private set; get; }
 
         public BaseLight(Vec3 origin)
         {
