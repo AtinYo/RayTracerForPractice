@@ -88,7 +88,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             //漫反射
             //取单位法向量 + 单位半径球上任意一点(可以理解为法向量的endpoint出发，指向球面任意一点)
-            return new Ray(record.hit_point, record.normal + new Vec3(utils.Instance.GenerateRandomNum(), utils.Instance.GenerateRandomNum(), utils.Instance.GenerateRandomNum()));
+            return new Ray(record.hit_point, record.normal + utils.Instance.GenerateRandomVector(1f));
         }
     }
 

@@ -15,7 +15,10 @@ namespace WindowsFormsApplication1.Ray_Tracing
         private Vec3 pixel_origin;//pixel coordinate origin
         private Vec3 pixel_horizontal;//pixel coordinate horizontal
         private Vec3 pixel_vertical;//pixel coordinate vertical
-        public Camera(Vec3 lookfrom, Vec3 lookat, Vec3 viewup, int _width, int _height, float _distance, float _render_depth)
+        private float aperture;//用来做聚焦模糊的defocus blur
+        Vec3 u, v, w;//camera coordinate，可能不需要保存
+
+        public Camera(Vec3 lookfrom, Vec3 lookat, Vec3 viewup, int _width, int _height, float _distance, float _render_depth, float _aperture=0f)
         {
             viewpoint = lookfrom;
 
@@ -25,9 +28,9 @@ namespace WindowsFormsApplication1.Ray_Tracing
             height = _height;
             distance = _distance;
             render_depth = _render_depth;
+            aperture = _aperture;
 
             //建立右手系的相机坐标
-            Vec3 u, v, w;//camera coordinate，可能不需要保存
             w = -viewdir.normalize();//相机的z轴,对于相机往里(往后
             u = Vec3.cross(viewup, w).normalize();//相机的x轴,对于相机水平向右
             v = Vec3.cross(w, u).normalize();//相机的y轴,对于相机水平向上
@@ -46,6 +49,13 @@ namespace WindowsFormsApplication1.Ray_Tracing
         /// <returns></returns>
         public Ray GetViewRay(float x, float y)
         {
+            if (aperture > 0)
+            {
+                // 聚焦模糊
+                float rand_num = utils.Instance.GenerateRandomNum(0, 1f);
+                Vec3 offset = u * rand_num + v * (1 - rand_num);
+                return new Ray(viewpoint + offset, pixel_origin + x / width * pixel_horizontal + y / height * pixel_vertical - viewpoint - offset);
+            }
             return new Ray(viewpoint, pixel_origin + x / width * pixel_horizontal + y / height * pixel_vertical - viewpoint);
         }
     }

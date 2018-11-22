@@ -79,7 +79,7 @@ namespace WindowsFormsApplication1
             scene.AddRenderObj(new Plane(new Vec3(0, 1, 0), -100, new LambertianMaterial(new Vec3(0, 0.8f, 0.8f), new Vec3(0.25f, 0.25f, 0.25f))));
 
             Camera camera = new Camera(new Vec3(0, 0, 0), new Vec3(0, 0, -1), new Vec3(0, 1, 0), 960, 540, 500, 550);
-
+            //Camera camera = new Camera(new Vec3(0, 0, 0), new Vec3(0, 0, -1), new Vec3(0, 1, 0), 960, 540, 500, 550, 2f);
 
             bitmap = new System.Drawing.Bitmap(960, 540);
             for (int i = 0; i < 960; i++)

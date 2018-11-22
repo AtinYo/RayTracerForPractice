@@ -43,5 +43,19 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             return (float)rand.NextDouble();
         }
+
+        //返回[min, max]区间的一个随机数
+        public float GenerateRandomNum(float min, float max)
+        {
+            return (float)rand.NextDouble() * (max - min) + min;
+        }
+
+        //返回长度约为len的vec3
+        public Vec3 GenerateRandomVector(float len)
+        {
+            float x = GenerateRandomNum(0, len);
+            float y = GenerateRandomNum(0, len - x);
+            return new Vec3(x, y, len - x - y);
+        }
     }
 }
