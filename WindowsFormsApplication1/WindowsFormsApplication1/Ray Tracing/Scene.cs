@@ -69,7 +69,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             {
                 //计算阴影
                 HitRecord shadow_record = null;//没什么用
-                Ray shadow_ray = new Ray(record.hit_point, light.light_origin - record.hit_point);
+                Ray shadow_ray = new Ray(record.hit_point, light.light_origin - record.hit_point, ray.DeltaTime);
                 if (CheckHit(shadow_ray, 0.0001f, render_depth, ref shadow_record, true))
                 {
                     if (!shadow_record.material.CanLightTransimit())

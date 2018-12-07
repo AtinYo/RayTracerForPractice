@@ -80,7 +80,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
 
         public override Vec3 GetColor(BaseLight light, Ray view_ray, HitRecord record, float depth)
         {
-            Vec3 l = -(light.GetLightRay(record.hit_point).Direction.normalize());
+            Vec3 l = -(light.GetLightRay(record.hit_point, view_ray.DeltaTime).Direction.normalize());
 
             float n_dot_l = Math.Max(0, Vec3.dot(record.normal, l));
 
@@ -97,7 +97,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             //漫反射
             //取单位法向量 + 单位半径球上任意一点(可以理解为法向量的endpoint出发，指向球面任意一点)
-            return new Ray(record.hit_point, record.normal + utils.Instance.GenerateRandomVector(1f));
+            return new Ray(record.hit_point, record.normal + utils.Instance.GenerateRandomVector(1f), ray_in.DeltaTime);
         }
     }
 
@@ -137,7 +137,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             //Phong公式: L = Kd * I * max(0, n·l) + Ks * I * max(0, n·h)^p
             // Kd是散射系数, n是表面法向量,l是光源方向(从相交点指向光源), Ks是高光系数,h是v+l的单位向量,v是视线反方向(从相交点只想视点), I是光强(光在这一点的颜色)
-            Vec3 l = -(light.GetLightRay(record.hit_point).Direction.normalize());
+            Vec3 l = -(light.GetLightRay(record.hit_point, view_ray.DeltaTime).Direction.normalize());
             float n_dot_l = Math.Max(0, Vec3.dot(record.normal, l));
 
             Vec3 h = (-view_ray.Direction + l).normalize();
@@ -165,7 +165,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             //镜面反射...
             Vec3 scattered_dir = ray_in.Direction - 2 * Vec3.dot(ray_in.Direction, record.normal) * record.normal;
-            return new Ray(record.hit_point, scattered_dir);
+            return new Ray(record.hit_point, scattered_dir, ray_in.DeltaTime);
         }
     }
 
@@ -184,7 +184,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
 
         public override Vec3 GetColor(BaseLight light, Ray view_ray, HitRecord record, float depth)
         {
-            Vec3 l = -(light.GetLightRay(record.hit_point).Direction.normalize());
+            Vec3 l = -(light.GetLightRay(record.hit_point, view_ray.DeltaTime).Direction.normalize());
 
             float n_dot_l = Math.Max(0, Vec3.dot(record.normal, l));
 
@@ -201,7 +201,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             //镜面反射...
             Vec3 scattered_dir = ray_in.Direction - 2 * Vec3.dot(ray_in.Direction, record.normal) * record.normal;
-            return new Ray(record.hit_point, scattered_dir);
+            return new Ray(record.hit_point, scattered_dir, ray_in.DeltaTime);
         }
 
         ///懒得注释了,折射公式推一推就有了
@@ -229,7 +229,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             if (discriminant > 0)//说明可以折射
             {
                 Vec3 refracted_dir = ni_over_nt * (v - outward_normal * dt) - outward_normal * (float)Math.Sqrt(discriminant);
-                refracted = new Ray(record.hit_point, refracted_dir);
+                refracted = new Ray(record.hit_point, refracted_dir, ray_in.DeltaTime);
                 return true;
             }
             return false;

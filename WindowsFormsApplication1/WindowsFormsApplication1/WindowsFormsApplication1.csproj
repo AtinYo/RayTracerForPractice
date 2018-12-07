@@ -52,6 +52,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Ray Tracing\AABB.cs" />
     <Compile Include="Ray Tracing\BaseLight.cs" />
     <Compile Include="Ray Tracing\Camera.cs" />
     <Compile Include="Ray Tracing\Hitable.cs" />

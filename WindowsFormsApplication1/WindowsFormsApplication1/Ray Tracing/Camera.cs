@@ -16,9 +16,14 @@ namespace WindowsFormsApplication1.Ray_Tracing
         private Vec3 pixel_horizontal;//pixel coordinate horizontal
         private Vec3 pixel_vertical;//pixel coordinate vertical
         private float aperture;//用来做聚焦模糊的defocus blur
+        private bool enable_motion_blur;//用来做动态模糊的.[忘了就看看ray tracing in next week.
+                                        //原理是假定相机快门在time0到time1期间拍摄.期间场景中物体中心由c1到c2,在time0到time1中任意一光线和物体相交,可以简化为直接取[c1,c2]中一个点c再相交]
+
+
         Vec3 u, v, w;//camera coordinate，可能不需要保存
 
-        public Camera(Vec3 lookfrom, Vec3 lookat, Vec3 viewup, int _width, int _height, float _distance, float _render_depth, float _aperture=0f)
+        //有时间有心情再把一些特性分离出component吧,一堆参数看着恶心,目前先把功能跑起来
+        public Camera(Vec3 lookfrom, Vec3 lookat, Vec3 viewup, int _width, int _height, float _distance, float _render_depth, float _aperture, bool _enable_motion_blur)
         {
             viewpoint = lookfrom;
 
@@ -29,6 +34,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             distance = _distance;
             render_depth = _render_depth;
             aperture = _aperture;
+            enable_motion_blur = _enable_motion_blur;
 
             //建立右手系的相机坐标
             w = -viewdir.normalize();//相机的z轴,对于相机往里(往后
@@ -49,14 +55,15 @@ namespace WindowsFormsApplication1.Ray_Tracing
         /// <returns></returns>
         public Ray GetViewRay(float x, float y)
         {
+            float delta_time = enable_motion_blur ? utils.Instance.GenerateRandomNum() : 0f;
             if (aperture > 0)
             {
                 // 聚焦模糊
-                float rand_num = utils.Instance.GenerateRandomNum(0, 1f);
+                float rand_num = utils.Instance.GenerateRandomNum(0, 1f) * aperture / 2;
                 Vec3 offset = u * rand_num + v * (1 - rand_num);
-                return new Ray(viewpoint + offset, pixel_origin + x / width * pixel_horizontal + y / height * pixel_vertical - viewpoint - offset);
+                return new Ray(viewpoint + offset, pixel_origin + x / width * pixel_horizontal + y / height * pixel_vertical - viewpoint - offset, delta_time);
             }
-            return new Ray(viewpoint, pixel_origin + x / width * pixel_horizontal + y / height * pixel_vertical - viewpoint);
+            return new Ray(viewpoint, pixel_origin + x / width * pixel_horizontal + y / height * pixel_vertical - viewpoint, delta_time);
         }
     }
 }

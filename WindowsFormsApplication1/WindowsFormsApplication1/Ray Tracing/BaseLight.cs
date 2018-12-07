@@ -18,7 +18,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             light_origin = origin;
         }
 
-        public virtual Ray GetLightRay(Vec3 point)
+        public virtual Ray GetLightRay(Vec3 point, float time)
         {
             throw new NotImplementedException();
         }
@@ -31,9 +31,9 @@ namespace WindowsFormsApplication1.Ray_Tracing
 
         }
 
-        public override Ray GetLightRay(Vec3 point)
+        public override Ray GetLightRay(Vec3 point, float time)
         {
-            return new Ray(light_origin, point - light_origin);
+            return new Ray(light_origin, point - light_origin, time);
         }
     }
 }

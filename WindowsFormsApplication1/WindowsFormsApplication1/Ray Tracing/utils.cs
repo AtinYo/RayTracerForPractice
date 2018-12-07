@@ -6,19 +6,8 @@ using System.Threading.Tasks;
 
 namespace WindowsFormsApplication1.Ray_Tracing
 {
-    public class utils
+    public static class utils
     {
-        private static utils _instance;
-        public static utils Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new utils();
-                return _instance;
-            }
-        }
-
         private static Random _rand;
         public static Random rand
         {
@@ -30,7 +19,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             }
         }
 
-        public double GenerateRandomNum_D()
+        public static double GenerateRandomNum_D()
         {
             return rand.NextDouble();
         }
@@ -39,23 +28,30 @@ namespace WindowsFormsApplication1.Ray_Tracing
         /// 返回一个介于 0.0 和 1.0 之间的随机数。
         /// </summary>
         /// <returns></returns>
-        public float GenerateRandomNum()
+        public static float GenerateRandomNum()
         {
             return (float)rand.NextDouble();
         }
 
         //返回[min, max]区间的一个随机数
-        public float GenerateRandomNum(float min, float max)
+        public static float GenerateRandomNum(float min, float max)
         {
             return (float)rand.NextDouble() * (max - min) + min;
         }
 
         //返回长度约为len的vec3
-        public Vec3 GenerateRandomVector(float len)
+        public static Vec3 GenerateRandomVector(float len)
         {
             float x = GenerateRandomNum(0, len);
             float y = GenerateRandomNum(0, len - x);
             return new Vec3(x, y, len - x - y);
+        }
+
+        public static void Swap(ref float a, ref float b)
+        {
+            float temp = b;
+            b = a;
+            a = temp;
         }
     }
 }
