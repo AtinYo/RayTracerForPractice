@@ -55,11 +55,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
         /// <returns></returns>
         public Ray GetViewRay(float x, float y)
         {
-            float delta_time = enable_motion_blur ? utils.Instance.GenerateRandomNum() : 0f;
+            float delta_time = enable_motion_blur ? utils.GenerateRandomNum() : 0f;
             if (aperture > 0)
             {
                 // 聚焦模糊
-                float rand_num = utils.Instance.GenerateRandomNum(0, 1f) * aperture / 2;
+                float rand_num = utils.GenerateRandomNum(0, 1f) * aperture / 2;
                 Vec3 offset = u * rand_num + v * (1 - rand_num);
                 return new Ray(viewpoint + offset, pixel_origin + x / width * pixel_horizontal + y / height * pixel_vertical - viewpoint - offset, delta_time);
             }

@@ -132,7 +132,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
                 for (int _n = 0; _n < n; _n++)
                 {
                     //utils.Instance.GenerateRandomNum()*2-1 -->  [-1, 1]的随机数
-                    ray = camera.GetViewRay((i + 1) + utils.Instance.GenerateRandomNum(), (540 - j) + utils.Instance.GenerateRandomNum());
+                    ray = camera.GetViewRay((i + 1) + utils.GenerateRandomNum(), (540 - j) + utils.GenerateRandomNum());
                     color_vec += GetColorFromMaterial(ray, camera.render_depth, 0);
                 }
                 return color_vec / (float)n;
