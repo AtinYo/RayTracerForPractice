@@ -32,5 +32,6 @@ namespace WindowsFormsApplication1.Ray_Tracing
     public interface Hitable
     {
         bool Hit(Ray ray, float t_min, float t_max, ref HitRecord record);
+        bool GetBoundingBox(float t_min, float t_max, ref AABB aabb);
     }
 }

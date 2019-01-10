@@ -9,6 +9,12 @@ namespace WindowsFormsApplication1.Ray_Tracing
     //axial align bound box. 参考ray tracing in next week实现
     public class AABB
     {
+        public AABB(Vec3 _min, Vec3 _max)
+        {
+            min = _min;
+            max = _max;
+        }
+
         //右手系的xyz下的min, max
         public Vec3 min { get; private set; }
         public Vec3 max { get; private set; }
@@ -42,6 +48,21 @@ namespace WindowsFormsApplication1.Ray_Tracing
                     return false;
             }
             return true;
+        }
+
+        public static AABB GetSurroundingBox(AABB box1, AABB box2)
+        {
+            Vec3 min = new Vec3(
+                box1.min.x <= box2.min.x ? box1.min.x : box2.min.x,
+                box1.min.y <= box2.min.y ? box1.min.y : box2.min.y,
+                box1.min.z <= box2.min.z ? box1.min.z : box2.min.z);
+
+            Vec3 max = new Vec3(
+                box1.max.x > box2.max.x ? box1.max.x : box2.max.x,
+                box1.max.y > box2.max.y ? box1.max.y : box2.max.y,
+                box1.max.z > box2.max.z ? box1.max.z : box2.max.z);
+
+            return new AABB(min, max);
         }
     }
 }

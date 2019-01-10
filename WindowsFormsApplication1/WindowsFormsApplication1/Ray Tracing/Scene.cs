@@ -13,17 +13,26 @@ namespace WindowsFormsApplication1.Ray_Tracing
         public static readonly int SAMPLING_TIMES = 16;//多少次采样[抗锯齿]
         #endregion
 
-        private List<RenderObj> renderobj_list = new List<RenderObj>();
+        private List<RenderObj> renderobj_list = new List<RenderObj>();// 存放没有aabb的对象,比如平面
 
         private BaseLight light = null;//以后学完相关再加多光源
 
+        private BVH bvh = new BVH();
+
+        public void InitBVH(Camera camera)
+        {
+            bvh.Init(0.0001f, camera.render_depth);
+        }
+
         public void AddRenderObj(RenderObj obj)
         {
+            bvh.AddHitable(obj);
             renderobj_list.Add(obj);
         }
 
         public void RemoveRenderObj(RenderObj obj)
         {
+            bvh.RemoveHitable(obj);
             renderobj_list.Remove(obj);
         }
 
@@ -32,6 +41,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             light = _light;
         }
 
+        #region 两个检测碰撞函数,
         public bool CheckHit(Ray ray, float t_min, float t_max, ref HitRecord record, bool need_check_transimit = false)
         {
             bool hit = false;
@@ -42,7 +52,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
 
             for (int i = 0; i < renderobj_list.Count; i++)
             {
-                if (renderobj_list[i].Hit(ray, 0.0001f, t_max, ref temp))
+                if (renderobj_list[i].Hit(ray, t_min, t_max, ref temp))
                 {
                     if (need_check_transimit && !renderobj_list[i].material.CanLightTransimit())//给计算影子射线hit到电介质用的.
                     {
@@ -60,17 +70,28 @@ namespace WindowsFormsApplication1.Ray_Tracing
             return hit;
         }
 
+        public bool CheckHitByBVH(Ray ray, float t_min, float t_max, ref HitRecord record, bool need_check_transimit = false)
+        {
+            if (bvh.Hit(ray, t_min, t_max, ref record))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
+
         public Vec3 GetColorFromMaterial(Ray ray, float render_depth, float scatter_depth)
         {
             HitRecord record = null;
 
-            //相交了再计算颜色
-            if (CheckHit(ray, 0.0001f, render_depth, ref record))
+            //相交了再计算颜色,下面那个CheckHitByBVH换成CheckHit才能渲染平面
+            if (CheckHitByBVH(ray, 0.0001f, render_depth, ref record))
             {
                 //计算阴影
                 HitRecord shadow_record = null;//没什么用
                 Ray shadow_ray = new Ray(record.hit_point, light.light_origin - record.hit_point, ray.DeltaTime);
-                if (CheckHit(shadow_ray, 0.0001f, render_depth, ref shadow_record, true))
+                if (CheckHitByBVH(shadow_ray, 0.0001f, render_depth, ref shadow_record, true))
                 {
                     if (!shadow_record.material.CanLightTransimit())
                         return Vec3.zero;

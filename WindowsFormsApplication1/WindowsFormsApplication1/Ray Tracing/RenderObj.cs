@@ -14,6 +14,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
         {
             throw new NotImplementedException();
         }
+
+        public virtual bool GetBoundingBox(float t_min, float t_max, ref AABB aabb)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Plane : RenderObj
@@ -52,6 +57,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
             }
             return false;
         }
+
+        public override bool GetBoundingBox(float t_min, float t_max, ref AABB aabb)
+        {
+            return false;
+        }
     }
 
     /// <summary>
@@ -71,18 +81,15 @@ namespace WindowsFormsApplication1.Ray_Tracing
             speed = _speed;
         }
 
+        public Vec3 GetCenter(float delta_time)
+        {
+            return speed == null ? center : center + speed * delta_time;
+        }
+
         public override bool Hit(Ray ray, float t_min, float t_max, ref HitRecord record)
         {
             //运动的球先求出time时刻球心位置
-            Vec3 _center;
-            if (speed != null)
-            {
-                _center = center + speed * ray.DeltaTime;
-            }
-            else
-            {
-                _center = center;
-            }
+            Vec3 _center = GetCenter(ray.DeltaTime);
 
             //ray == o+t*d; o 是射线原点,t是参数,d是方向
             //(p - c)^2 = radius^2;p是球面上一点,c是球心,radius是球半径
@@ -122,6 +129,13 @@ namespace WindowsFormsApplication1.Ray_Tracing
                 }
             }
             return false;
+        }
+
+        public override bool GetBoundingBox(float t_min, float t_max, ref AABB aabb)
+        {
+            //Vec3 _center = GetCenter(delta_time); 先不考虑有位移情况
+            aabb = new AABB(center - new Vec3(radius, radius, radius), center + new Vec3(radius, radius, radius));
+            return true;
         }
     }
 

@@ -71,17 +71,19 @@ namespace WindowsFormsApplication1
             //添加物体
             scene.AddRenderObj(new Plane(new Vec3(0, 1, 0), -100, new LambertianMaterial(new Vec3(0, 0.8f, 0.8f), new Vec3(0.25f, 0.25f, 0.25f))));
             scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 1, 1), new Vec3(1, 1, 1), 64, new Vec3(0.25f, 0.25f, 0.25f)), new Vec3(0, 10, 0)));
+            //scene.AddRenderObj(new Sphere(new Vec3(100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 1, 1), new Vec3(1, 1, 1), 64, new Vec3(0.25f, 0.25f, 0.25f)), new Vec3(0, 10, 0)));
             scene.AddRenderObj(new Sphere(new Vec3(100, 0, -300), 100f, new LambertianMaterial(new Vec3(0, 0, 1), new Vec3(0.25f, 0.25f, 0.25f)), new Vec3(30, 0, 0))); 
-            //scene.AddRenderObj(new Sphere(new Vec3(0, 0, -100), 25f, new DielectricMaterial(Vec3.one, 2.4f))); 用来测试电介质材质
+            //scene.AddRenderObj(new Sphere(new Vec3(0, 0, -100), 25f, new DielectricMaterial(Vec3.one, 2.4f))); //用来测试电介质材质
 
 
             //scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 0, 1), new Vec3(1, 1, 1), 64, Vec3.one)));
             //scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new LambertianMaterial(new Vec3(1, 1, 1), new Vec3(0.25f,0.25f,0.25f))));
 
-
             Camera camera = new Camera(new Vec3(0, 0, 0), new Vec3(0, 0, -1), new Vec3(0, 1, 0), 960, 540, 500, 550, 0f, false);
             //Camera camera = new Camera(new Vec3(0, 0, 0), new Vec3(0, 0, -1), new Vec3(0, 1, 0), 960, 540, 500, 550, 0f, true); //参数_enable_motion_blur代表是否开启动态模糊,这里的最后一个true
             //Camera camera = new Camera(new Vec3(0, 0, 0), new Vec3(0, 0, -1), new Vec3(0, 1, 0), 960, 540, 500, 550, 20f); //参数_aperture代表聚焦模糊.这里的最后一个'20f'
+            
+            scene.InitBVH(camera);//用BVH,但是没办法加入平面
 
             bitmap = new System.Drawing.Bitmap(960, 540);
             for (int i = 0; i < 960; i++)
