@@ -69,10 +69,23 @@ namespace WindowsFormsApplication1
             //scene.SetLightSource(new PointLight(new Vec3(300, 300, -400))); 用来测试背光面出现高光
 
             //添加物体
-            scene.AddRenderObj(new Plane(new Vec3(0, 1, 0), -100, new LambertianMaterial(new Vec3(0, 0.8f, 0.8f), new Vec3(0.25f, 0.25f, 0.25f))));
-            scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 1, 1), new Vec3(1, 1, 1), 64, new Vec3(0.25f, 0.25f, 0.25f)), new Vec3(0, 10, 0)));
+            scene.AddRenderObj(new Plane(new Vec3(0, 1, 0), -100,
+                new LambertianMaterial(new Vec3(0, 0.8f, 0.8f), new Vec3(0.25f, 0.25f, 0.25f), new CheckerTexture(new NormalTexture(new Vec3(1, 1, 1)), new NormalTexture(new Vec3(0, 0, 0))))));
+
+            //scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f,
+            //    new PhongMaterial(new Vec3(0, 1, 1), new Vec3(1, 1, 1), 64, new Vec3(0.25f, 0.25f, 0.25f), new BaseTexture()),
+            //    new Vec3(0, 10, 0)));
+
+            //scene.AddRenderObj(new Sphere(new Vec3(-100, 0, -300), 100f,
+            //    new LambertianMaterial(new Vec3(0, 0, 1), new Vec3(0.25f, 0.25f, 0.25f), new NoiseTexture()),
+            //    new Vec3(30, 0, 0))); //柏林噪声
+
             //scene.AddRenderObj(new Sphere(new Vec3(100, 0, -300), 100f, new PhongMaterial(new Vec3(0, 1, 1), new Vec3(1, 1, 1), 64, new Vec3(0.25f, 0.25f, 0.25f)), new Vec3(0, 10, 0)));
-            scene.AddRenderObj(new Sphere(new Vec3(100, 0, -300), 100f, new LambertianMaterial(new Vec3(0, 0, 1), new Vec3(0.25f, 0.25f, 0.25f)), new Vec3(30, 0, 0))); 
+
+            scene.AddRenderObj(new Sphere(new Vec3(100, 0, -300), 100f,
+                new LambertianMaterial(new Vec3(0, 0, 1), new Vec3(0.25f, 0.25f, 0.25f), new ImageTexture(@"E:\Atin_项目文件temp存放区\earth_high.jpg", new Vec3(100, 0, -300))),
+                new Vec3(30, 0, 0)));
+
             //scene.AddRenderObj(new Sphere(new Vec3(0, 0, -100), 25f, new DielectricMaterial(Vec3.one, 2.4f))); //用来测试电介质材质
 
 

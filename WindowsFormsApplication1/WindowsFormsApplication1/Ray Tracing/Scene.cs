@@ -86,12 +86,12 @@ namespace WindowsFormsApplication1.Ray_Tracing
             HitRecord record = null;
 
             //相交了再计算颜色,下面那个CheckHitByBVH换成CheckHit才能渲染平面
-            if (CheckHitByBVH(ray, 0.0001f, render_depth, ref record))
+            if (CheckHit(ray, 0.0001f, render_depth, ref record))
             {
                 //计算阴影
                 HitRecord shadow_record = null;//没什么用
                 Ray shadow_ray = new Ray(record.hit_point, light.light_origin - record.hit_point, ray.DeltaTime);
-                if (CheckHitByBVH(shadow_ray, 0.0001f, render_depth, ref shadow_record, true))
+                if (CheckHit(shadow_ray, 0.0001f, render_depth, ref shadow_record, true))
                 {
                     if (!shadow_record.material.CanLightTransimit())
                         return Vec3.zero;
@@ -118,16 +118,6 @@ namespace WindowsFormsApplication1.Ray_Tracing
                 {
                     return Vec3.zero;
                 }
-
-                //法向量颜色
-                //return System.Drawing.Color.FromArgb(
-                //    (int)(255 * (record.normal.x + 1) / 2),
-                //    (int)(255 * (record.normal.y + 1) / 2),
-                //    (int)(255 * (record.normal.z + 1) / 2));
-
-
-                //普通材质颜色
-                //return BaseMaterial.NomarlMaterial.GetColor(light, null, record, cam.render_depth);
             }
 
             //return Vec3.one;//没有相交的话,给白色 或 达到了递归最大次数

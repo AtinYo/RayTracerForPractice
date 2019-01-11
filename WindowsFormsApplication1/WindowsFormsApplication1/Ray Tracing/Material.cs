@@ -9,7 +9,8 @@ namespace WindowsFormsApplication1.Ray_Tracing
     public class BaseMaterial
     {
         public Vec3 attenuation { get; protected set; }//衰减率
-        public float refracted_index{ get; protected set; }//折射率,typically air = 1, glass = 1.3-1.7, diamond = 2.4[通常空气折射率1,玻璃1.3-1.7,钻石2.4]
+        public float refracted_index { get; protected set; }//折射率,typically air = 1, glass = 1.3-1.7, diamond = 2.4[通常空气折射率1,玻璃1.3-1.7,钻石2.4]
+        public BaseTexture texture { get; protected set; }
 
         /// <summary>
         /// 
@@ -43,18 +44,16 @@ namespace WindowsFormsApplication1.Ray_Tracing
             return false;
         }
 
-        public static readonly BaseMaterial NomarlMaterial = new DefaultMaterial(new Vec3(1, 1, 1));
+        public static readonly BaseMaterial NomarlMaterial = new DefaultMaterial(new NormalTexture(new Vec3(1, 1, 1)));
     }
 
 
 
     public class DefaultMaterial : BaseMaterial
     {
-        private Vec3 default_color;
-
-        public DefaultMaterial(Vec3 _default_color)
+        public DefaultMaterial(BaseTexture _texture)
         {
-            default_color = _default_color;
+            texture = _texture;
         }
 
         public override Vec3 GetColor(BaseLight light, Ray view_ray, HitRecord record, float depth)
@@ -62,7 +61,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
             //把光在某一点的颜色，用距离映射到颜色区间
             //[0, depth] -- > [0, 255]不过,len = 0的时候是255, len = depth的时候是0
             float coeffience = 1-(record.t / depth);
-            return default_color * coeffience;
+            return texture.GetColorValue(0, 0, null) * coeffience;
         }
     }
 
@@ -71,11 +70,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
     public class LambertianMaterial : BaseMaterial
     {
         private Vec3 diffuse;//散射系数或表面颜色,这里我作为表面颜色
-
-        public LambertianMaterial(Vec3 _diffuse, Vec3 _attenuation)
+        public LambertianMaterial(Vec3 _diffuse, Vec3 _attenuation, BaseTexture _texture)
         {
             diffuse = _diffuse;//(1,1,1)表示(255,255,255). [0, 255]映射到[0, 1]区间
             attenuation = _attenuation;//(0,0,0)到(1,1,1)区间的衰减系数
+            texture = _texture;
         }
 
         public override Vec3 GetColor(BaseLight light, Ray view_ray, HitRecord record, float depth)
@@ -86,7 +85,9 @@ namespace WindowsFormsApplication1.Ray_Tracing
 
             Vec3 I = Vec3.one;
 
-            Vec3 dif = diffuse * n_dot_l;
+            Vec3 color = texture == null ? diffuse : texture.GetColorValue(0, 0, record.hit_point);//这里还要改的，下面的material也是，感觉material用来定义反射之类的物理计算公式。颜色映射还是交给texture吧
+
+            Vec3 dif = color * n_dot_l;
 
             Vec3 L = Vec3.product(I, dif);
 
@@ -115,12 +116,13 @@ namespace WindowsFormsApplication1.Ray_Tracing
         /// <param name="_diffuse">散射系数或表面颜色;(1,1,1)表示(255,255,255). [0, 255]映射到[0, 1]区间</param>
         /// <param name="_specular">高光系数或高光颜色;(1,1,1)表示(255,255,255). [0, 255]映射到[0, 1]区间</param>
         /// <param name="_phong_exp">Phong exponent</param>
-        public PhongMaterial(Vec3 _diffuse, Vec3 _specular, int _phong_exp, Vec3 _attenuation)
+        public PhongMaterial(Vec3 _diffuse, Vec3 _specular, int _phong_exp, Vec3 _attenuation, BaseTexture _texture)
         {
             diffuse = _diffuse;//(1,1,1)表示(255,255,255). [0, 255]映射到[0, 1]区间
             specular = _specular;//同上
             phong_exp = _phong_exp;
             attenuation = _attenuation;
+            texture = _texture;
         }
 
         //magic function.. = =,神奇的以0和0.12f这两个数为分界线做插值可以解决背光面高光问题...
@@ -175,11 +177,12 @@ namespace WindowsFormsApplication1.Ray_Tracing
     {
         private Vec3 diffuse;//散射系数或表面颜色
 
-        public DielectricMaterial(Vec3 _diffuse, float _refracted_index)
+        public DielectricMaterial(Vec3 _diffuse, float _refracted_index, BaseTexture _texture)
         {
             diffuse = _diffuse;
             attenuation = Vec3.one;
             refracted_index = _refracted_index;
+            texture = _texture;
         }
 
         public override Vec3 GetColor(BaseLight light, Ray view_ray, HitRecord record, float depth)

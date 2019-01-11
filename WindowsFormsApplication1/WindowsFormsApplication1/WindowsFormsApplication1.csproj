@@ -58,9 +58,11 @@
     <Compile Include="Ray Tracing\Camera.cs" />
     <Compile Include="Ray Tracing\Hitable.cs" />
     <Compile Include="Ray Tracing\Material.cs" />
+    <Compile Include="Ray Tracing\Perlin.cs" />
     <Compile Include="Ray Tracing\Ray.cs" />
     <Compile Include="Ray Tracing\RenderObj.cs" />
     <Compile Include="Ray Tracing\Scene.cs" />
+    <Compile Include="Ray Tracing\Texture.cs" />
     <Compile Include="Ray Tracing\unittest.cs" />
     <Compile Include="Ray Tracing\utils.cs" />
     <Compile Include="Ray Tracing\Vec3.cs" />

@@ -144,6 +144,11 @@ namespace WindowsFormsApplication1.Ray_Tracing
             return System.Drawing.Color.FromArgb(255, (int)(x * 255), (int)(y * 255), (int)(z * 255));
         }
 
+        public static Vec3 ToVec3(System.Drawing.Color color)
+        {
+            return new Vec3(color.R / 255f, color.G / 255f, color.B / 255f);
+        }
+
         public static readonly Vec3 one = new Vec3(1, 1, 1);//单位向量
         public static readonly Vec3 zero = new Vec3(0, 0, 0);//零向量
     }

@@ -9,7 +9,7 @@ namespace WindowsFormsApplication1.Ray_Tracing
     public class unittest
     {
         public unittest() { }
-        
+
         public void RunTest()
         {
 
